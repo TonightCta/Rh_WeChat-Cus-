@@ -52,81 +52,36 @@ const router=new Router({
         title:'企业注册'
       }
     },
-    // {
-    //   path:'/proDetials',//项目详情,
-    //   name:'ProDetials',
-    //   component:resolve=>require(['@/page/proAbout/pro_details'],resolve)
-    // },
-    // {
-    //   path:'/proApply',//申请接单
-    //   name:'ProApply',
-    //   component:resolve=>require(['@/page/proAbout/pro_apply'],resolve)
-    // },
-    // {
-    //   path:'/mine',//个人中心
-    //   name:'Mine',
-    //   component:resolve=>require(['@/page/mine/mine'],resolve)
-    // },
+    {
+      path:'/mine',//个人中心
+      name:'Mine',
+      component:resolve=>require(['@/page/mine/mine'],resolve)
+    },
+    {
+      path:'/mineOrder',//我的发单
+      name:'MineOrder',
+      component:resolve=>require(['@/page/mine/mineOrder'],resolve)
+    },
     {
       path:'/mineMessages',//消息中心
       name:'MineMessages',
       component:resolve=>require(['@/page/mine/mineMessages'],resolve)
     },
-    // {
-    //   path:'/minePro',//个人接单
-    //   name:'MinePro',
-    //   component:resolve=>require(['@/page/mine/minePro'],resolve)
-    // },
-    // {
-    //   path:'/mineProDe',//个人接单详情
-    //   name:'MineProDe',
-    //   component:resolve=>require(['@/page/mine/mineProDetails'],resolve)
-    // },
-    // {
-    //   path:'/mineAuth',//我的认证
-    //   name:'MineAuth',
-    //   component:resolve=>require(['@/page/mine/mineAuth'],resolve)
-    // },
-    // {
-    //   path:'/mineFeild',//擅长领域
-    //   name:'MineFeild',
-    //   component:resolve=>require(['@/page/mine/mineFeild'],resolve)
-    // },
-    // {
-    //   path:'/mineCard',//身份认证
-    //   name:'MineCard',
-    //   component:resolve=>require(['@/page/mine/mineCard'],resolve)
-    // },
-    // {
-    //   path:'/skillList',//技能列表
-    //   name:'SkillList',
-    //   component:resolve=>require(['@/page/mine/skillList'],resolve)
-    // },
-    // {
-    //   path:'/addSkill',//添加技能认证
-    //   name:'AddSkill',
-    //   component:resolve=>require(['@/page/mine/addSkill'],resolve)
-    // },
-    // {
-    //   path:'/engAuth',//工程师认证
-    //   name:'EngAuth',
-    //   component:resolve=>require(['@/page/mine/engAuth'],resolve)
-    // },
-    // {
-    //   path:'/engCard',//工程师资质认证
-    //   name:'EngCard',
-    //   component:resolve=>require(['@/page/mine/engCard'],resolve)
-    // },
-    // {
-    //   path:'/alipayAuth',//支付宝认证
-    //   name:'AlipayAuth',
-    //   component:resolve=>require(['@/page/mine/alipayAuth'],resolve)
-    // },
-    // {
-    //   path:'/mineLiver',//项目交付
-    //   name:'MineLiver',
-    //   component:resolve=>require(['@/page/mine/mineNLiver'],resolve)
-    // }
+    {
+      path:'/companyAuth',//企业认证
+      name:'ComPanyAuth',
+      component:resolve=>require(['@/page/mine/companyAuth'],resolve)
+    },
+    {
+      path:'/sendComOrder',//企业发单
+      name:'SendComOrder',
+      component:resolve=>require(['@/page/sendOrder/sendFirst'],resolve)
+    },
+    {
+      path:'/sendComTurnOrder',//发送需求
+      name:'SendComTurnOrder',
+      component:resolve=>require(['@/page/sendOrder/sendSecond'],resolve)
+    },
   ]
 });
 router.beforeEach((to,from,next)=>{
@@ -134,6 +89,8 @@ router.beforeEach((to,from,next)=>{
   next()
 })
 router.afterEach(() => {
+  setTimeout(()=>{
     NProgress.done()
+  },500)
 })
 export default router;

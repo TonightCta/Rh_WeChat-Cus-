@@ -17,10 +17,10 @@
       <div class="con_mes">
         <ul>
           <li>手机号:&nbsp;18888888888</li>
-          <li>擅长行业:&nbsp;移动互联网,物联网,智慧城市</li>
-          <router-link to="/mineFeild" tag="li">擅长技能:&nbsp;软件开发,视频监控,网站搭建</router-link>
+          <li>所属行业:&nbsp;移动互联网</li>
+          <!-- <router-link to="/mineFeild" tag="li">擅长技能:&nbsp;软件开发,视频监控,网站搭建</router-link> -->
           <li>所在地区:&nbsp;北京-海淀区</li>
-          <router-link to="/mineAuth" tag="li">
+          <router-link to="/companyAuth" tag="li">
             我的认证&nbsp;
               <span class="right_oper icon">
                 <van-icon name="arrow" size="22" />

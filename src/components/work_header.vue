@@ -30,6 +30,7 @@ export default {
   color:white;
   font-size: 1.6rem;
   font-weight: bold;
+  z-index: 1000;
   .back_btn{
     position: absolute;
     left:1rem;

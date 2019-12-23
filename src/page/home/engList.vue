@@ -12,9 +12,9 @@
           >
             <van-cell  v-for="(eng,indexEng) in engList" :key="indexEng" class="list_con">
               <img :src="eng.pic" alt="">
-              <span>{{eng.name}}</span>
-              <span>{{eng.text}}</span>
-              <span>{{eng.content}}</span>
+              <span class="eng_name">{{eng.name}}</span>
+              <span class="eng_type">{{eng.text}}</span>
+              <span class="eng_con">{{eng.content}}</span>
             </van-cell>
           </van-list>
         </van-pull-refresh>
@@ -81,6 +81,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  padding-bottom: 10rem;
   .list_con{
     width: 95%;
     margin:0 auto;
@@ -93,6 +94,31 @@ export default {
       width: 8rem;
       height:8rem;
       border-radius: 50%;
+    }
+    .eng_name{
+      position: absolute;
+      top:0;
+      left:9rem;
+      font-size: 1.5rem;
+      top:.5rem;
+    }
+    .eng_type{
+      border:1px solid $tem-color;
+      border-radius: 10px;
+      color:$tem-color;
+      padding-left: .2rem;
+      padding-right: .2rem;
+      font-size: 1.2rem;
+      position: absolute;
+      top:3.5rem;
+      left:9rem;
+      height: 1.5rem;
+      line-height: 1.5rem;
+    }
+    .eng_con{
+      position: absolute;
+      left:9rem;
+      bottom:.2rem;
     }
   }
 }

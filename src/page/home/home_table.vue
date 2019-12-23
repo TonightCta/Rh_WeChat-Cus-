@@ -3,12 +3,12 @@
   <div class="home_table">
     <ul class="table_con">
       <li @click="openLss()">我要发单</li>
-      <li>我的发单</li>
+      <router-link to="/mineOrder" tag="li">我的发单</router-link>
     </ul>
-    <div class="lssue_box" ref="lssue_box" v-if="isOpenLss" @click.stop="closeLss()">
+    <div class="lssue_box" ref="lssue_box" v-if="isOpenLss" @click="closeLss()">
       <ul>
         <li ref="mineLss">个人发布</li>
-        <li ref="companyLss">企业发布</li>
+        <li ref="companyLss" @click.stop="sendOrder()">企业发布</li>
       </ul>
       <span>
         <van-icon name="cross" size="50"/>
@@ -44,6 +44,9 @@ export default {
       setTimeout(()=>{
         this.isOpenLss=false;
       },300)
+    },
+    sendOrder(){
+      this.$router.push('/sendComOrder')
     }
   }
 }
@@ -99,7 +102,7 @@ export default {
         bottom: -200%;
         position: absolute;
         transition: .5s all;
-        left: 14%;
+        left: 3rem;
       }
       li:last-child{
         width: 12rem;
@@ -110,7 +113,7 @@ export default {
         line-height: 12rem;
         text-align: center;
         position: absolute;
-        right:14%;
+        right:3rem;
         bottom: -200%;
         transition: .5s all;
       }
