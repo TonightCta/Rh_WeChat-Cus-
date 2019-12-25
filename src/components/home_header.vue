@@ -4,13 +4,13 @@
     <van-icon name="wap-nav" color="white" size="3rem"  @click="show=true"/>
     <div class="user_list">
       <van-popup v-model="show"  position="left" :style="{width:'50%',height:'100%'}">
-        <router-link to="/login" tag="p" class="user_icon">
-          <img src="../../static/img/dont.jpg" alt=""/>
-        </router-link>
+        <p class="user_icon">
+          <img src="../../static/img/dont.jpg" alt="" @click="goLogin()"/>
+        </p>
         <ul class="list_toute">
           <li>昵称:  海绵宝宝</li>
           <!-- <li>手机号:  18888888888</li> -->
-          <router-link to="/mine" tag="li">个人信息>></router-link>
+          <li @click="goLogin()">个人信息>></li>
           <!-- <router-link to="/minePro" tag="li">我的接单>></router-link> -->
           <router-link to="/mineMessages" tag="li">我的消息>></router-link>
           <li>退出登录>></li>
@@ -21,11 +21,24 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   data(){
     return{
       show:false
     }
+  },
+  computed:{
+    ...mapState(['token'])
+  },
+  methods:{
+    goLogin(){//登录
+      if(this.token!=null){
+        this.$router.push('/mine')
+      }else{
+        this.$router.push('/login')
+      }
+    },
   }
 }
 </script>

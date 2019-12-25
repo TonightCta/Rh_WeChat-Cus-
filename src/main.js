@@ -7,9 +7,13 @@ import '../static/css/aimate.css'
 import store from './assets/store/store'
 import router from './router';
 import VueWechatTitle from 'vue-wechat-title';
-import { Lazyload,Dialog  } from 'vant';
+import { Lazyload,Toast  } from 'vant';
 import NProgress from 'nprogress'
+import Axios from 'axios'
 import 'nprogress/nprogress.css'
+Vue.prototype.$toast=Toast;
+Vue.prototype.$axios=Axios;
+Vue.prototype.url='http://10.0.0.28:4444';
 NProgress.configure({
     easing: 'ease',  // 动画方式
     speed: 500,  // 递增进度条的速度
@@ -20,7 +24,6 @@ NProgress.configure({
 Vue.use(VueWechatTitle)
 Vue.use(Lazyload)
 Vue.use(Vant)
-Vue.use(Dialog)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

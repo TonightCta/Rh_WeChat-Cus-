@@ -27,13 +27,7 @@
           <input type="number" name="" value="" placeholder="￥">
         </li>
       </ul>
-      <p style="marginTop:1rem;">
-        <van-radio-group v-model="isAgree">
-          <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目发布规则》</span></van-radio>
-        </van-radio-group>
-      </p>
-      <p class="publicP">温馨提示:</p>
-      <p class="publicP">&nbsp;&nbsp;&nbsp;1、请您仔细核对填写的项目信息胡椒粉和科技阿富汗喀个哈萨克就复活卡时间发货个哈时间复活卡时间发哈市发哈时间发货</p>
+    >
     </div>
     <div class="">
       <van-popup
@@ -194,10 +188,6 @@ export default {
       padding-right: 1rem;
       color:$tem-color;
     }
-  }
-  .publicP{
-    color:$tem-color;
-    margin-top: 1rem;
   }
   .order_btn{
     width: 100%;
