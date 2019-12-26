@@ -110,7 +110,7 @@ export default {
           })
         }
     },
-    loginCode(){//
+    loginCode(){//验证码登录
       let _this=this;
       if(_this.codePhone==null||_this.codePhone==''){
         _this.$toast('请输入手机号')

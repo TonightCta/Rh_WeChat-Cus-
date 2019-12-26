@@ -8,11 +8,11 @@
       <div class="company_bank">
         <p>
           公司开户行名称:
-          <input type="text" name="" value="" placeholder="请输入公司开户行名称">
+          <input type="text" name="" value="" placeholder="请输入公司开户行名称" v-model="bankName">
         </p>
         <p>
           公司开户银行账号:
-          <input type="number" name="" value="" placeholder="请输入公司开户行账号">
+          <input type="number" name="" value="" placeholder="请输入公司开户行账号" v-model="bankNum">
         </p>
       </div>
       <div class="company_mes">
@@ -27,7 +27,7 @@
         </p>
         <p class="publicP">
           <van-radio-group v-model="isAgree">
-            <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目发布规则》</span></van-radio>
+            <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目认证规则》</span></van-radio>
           </van-radio-group>
         </p>
         <p class="publicP">温馨提示:</p>
@@ -42,12 +42,13 @@
       </van-image-preview>
     </div>
     <p class="sub_btn">
-      <button type="button" name="button">提交认证</button>
+      <button type="button" name="button" @click="subAuth()">提交认证</button>
     </p>
   </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import WorkHeader from '@/components/work_header'
 export default {
   components:{WorkHeader},
@@ -57,12 +58,19 @@ export default {
       isUpLic:true,//图片上传按钮
       licPic:[],//营业执照列表
       licPicBox:false,//查看大图盒子
+      upFile:null,//营业执照
+      bankName:null,//开户行名称
+      bankNum:null,//银行账号
     }
+  },
+  computed:{
+    ...mapState(['token'])
   },
   methods:{
     upLic(e){//营业执照上传
       let _this=this;
       let file=e.target.files[0];
+      _this.upFile=file;
       let reader=new FileReader();
       reader.readAsDataURL(file);
       reader.onload=function(){
@@ -70,9 +78,39 @@ export default {
         _this.isUpLic=false;
       };
     },
-    delLicPic(){
+    delLicPic(){//删除已上传照片
       this.licPic=[];
       this.isUpLic=true;
+      this.upFile=null;
+    },
+    subAuth(){//上传认证
+      let _vm=this;
+      if(_vm.bankName==null||_vm.bankName==''){
+        _vm.$toast('请输入开户行名称')
+      }else if(_vm.bankNum==null||_vm.bankNum==''){
+        _vm.$toast('请输入开户行账号')
+      }else if(_vm.upFile==null){
+        _vm.$toast('请上传营业执照')
+      }else if(_vm.isAgree!=1){
+        _vm.$toast('请您勾选并知晓认证规则')
+      }else{
+        let formdata=new FormData();
+        formdata.append('accountName',_vm.bankName)
+        formdata.append('accountNumber',_vm.bankNum)
+        formdata.append('file',_vm.upFile);
+        _vm.$axios.post(_vm.url+'/ict/customer/saveInfo',formdata,{headers:{
+          'Authorization':_vm.token
+        }}).then((res)=>{
+          if(res.data.code==0){
+            _vm.$toast('提交成功,请耐心等待审核');
+            _vm.$router.go(-1);
+          }else{
+            _vm.$toast(res.data.msg)
+          }
+        }).catch((err)=>{
+          _vm.$toast('未知错误,请联系客服')
+        })
+      }
     }
   }
 }

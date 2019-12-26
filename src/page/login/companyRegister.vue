@@ -150,7 +150,7 @@ export default {
         _this.$axios.post(_this.url+'/ict/operator/register_customer',formdata).then((res)=>{
           if(res.data.code==0){
             _this.token_fn(res.data.data.token);
-            _this.$outer.push('/');
+            _this.$router.push('/');
             _this.$toast('登录成功')
           }else{
             _this.$toast(res.data.msg)

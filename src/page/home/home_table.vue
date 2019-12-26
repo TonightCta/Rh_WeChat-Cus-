@@ -18,11 +18,15 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   data(){
     return{
       isOpenLss:false,
     }
+  },
+  computed:{
+    ...mapState(['token'])
   },
   methods:{
     openLss(){//发单窗口
@@ -46,7 +50,12 @@ export default {
       },300)
     },
     sendOrder(){
-      this.$router.push('/sendComOrder')
+      if(this.token== null){
+        this.$toast('请先登录');
+        this.$router.push('/login')
+      }else{
+        this.$router.push('/sendComOrder')
+      }
     }
   }
 }
