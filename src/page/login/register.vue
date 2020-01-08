@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 import LoginHeader from '@/components/login_header'
 export default {
   components:{
@@ -58,6 +59,7 @@ export default {
     }
   },
   methods:{
+
     sendCode(){//发送验证码
       this.$refs.codeBtn.style.background="#eee"
       this.$refs.codeBtn.style.color="#666"
@@ -95,6 +97,7 @@ export default {
     padding-top: 1rem;
     p{
       width: 100%;
+      margin-top: .5rem;
       input{
         border-bottom:1px solid #ccc;
         width: 100%;

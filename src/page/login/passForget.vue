@@ -42,7 +42,7 @@ export default {
     }
   },
   methods:{
-    ...mapMutations(['token_fn']),
+    ...mapMutations(['token_fn','userMes_fn']),
     sendCode(){//发送验证码
       if(this.userPhone==null||this.userPhone==''){
         this.$toast('请输入手机号')
@@ -107,6 +107,7 @@ export default {
         _this.$axios.post(_this.url+'/ict/operator/forgetPassword',formdata).then((res)=>{
           if(res.data.code==0){
             _this.token_fn(res.data.data.token);
+            _this.userMes_fn(res.data.data)
             _this.$toast('重置成功');
             _this.$router.push('/')
           }else{
@@ -130,6 +131,7 @@ export default {
     padding-top: 1rem;
     p{
       width: 100%;
+      margin-top: .5rem;
       input{
         border-bottom:1px solid #ccc;
         width: 100%;

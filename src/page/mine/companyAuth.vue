@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState,mapMutations} from 'vuex'
 import WorkHeader from '@/components/work_header'
 export default {
   components:{WorkHeader},
@@ -67,6 +67,7 @@ export default {
     ...mapState(['token'])
   },
   methods:{
+    ...mapMutations(['userMes_fn']),
     upLic(e){//营业执照上传
       let _this=this;
       let file=e.target.files[0];
@@ -102,6 +103,7 @@ export default {
           'Authorization':_vm.token
         }}).then((res)=>{
           if(res.data.code==0){
+            _vm.userMes_fn(res.data.data);
             _vm.$toast('提交成功,请耐心等待审核');
             _vm.$router.go(-1);
           }else{

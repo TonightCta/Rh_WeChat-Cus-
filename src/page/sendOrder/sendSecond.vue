@@ -1,4 +1,4 @@
-<!-- 发送需求二 -->
+<!-- 个人发布需求 -->
 <template lang="html">
   <div class="send_first">
     <WorkHeader>
@@ -6,29 +6,49 @@
     </WorkHeader>
     <div class="first_con">
       <ul>
+        <li>项目名称:
+          <input type="text" name="" value="" placeholder="请输入项目名称" v-model="upMes.proName">
+        </li>
+        <li>需求类型:
+          <input type="text" name="" value="" placeholder="请输入需求类型" v-model="upMes.demandType">
+          <span @click="typeChose=true"></span>
+        </li>
+        <li>
+          <textarea name="name" rows="8" cols="80" placeholder="请输入需求描述" v-model="upMes.demandDire"></textarea>
+        </li>
         <li>服务地址:
-          <input type="text" name="" value="" placeholder="请选择服务地址" v-model="cityText">
+          <input type="text" name="" value="" placeholder="请选择服务地址" v-model="upMes.cityText">
           <span @click="placeChose=true"></span>
         </li>
-        <li>开始时间:
-          <input type="text" name="" value="" placeholder="请选择开始时间" v-model="dateText">
-          <span @click="dateChose=true"></span>
+        <li>详细地址:
+          <input type="text" name="" value="" placeholder="请输入详细地址" v-model="upMes.address">
         </li>
         <li>&nbsp;&nbsp;&nbsp;联系人:
-          <input type="text" name="" value="" placeholder="请输入联系人">
+          <input type="text" name="" value="" placeholder="请输入联系人" v-model="upMes.demandCus">
         </li>
-        <li>联系电话:
-          <input type="text" name="" value="" placeholder="请输入联系人电话">
+        <li>现场联系人电话:
+          <input type="text" name="" value="" placeholder="请输入联系人电话" v-model="upMes.demandMoblie" style="width:20rem;">
+        </li>
+        <li>开始时间:
+          <input type="text" name="" value="" placeholder="请选择开始时间" v-model="upMes.dateText">
+          <span @click="dateChose=true"></span>
         </li>
         <li>
           预算金额:
-          <input type="number" name="" value="" placeholder="￥">
+          <input type="number" name="" value="" placeholder="￥" v-model="upMes.minMount">
           ———
-          <input type="number" name="" value="" placeholder="￥">
+          <input type="number" name="" value="" placeholder="￥" v-model="upMes.maxMount">
         </li>
       </ul>
-    >
+      <p style="marginTop:1rem;">
+        <van-radio-group v-model="upMes.isAgree">
+          <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目发布规则》</span></van-radio>
+        </van-radio-group>
+      </p>
+      <p class="publicP">温馨提示:</p>
+      <p class="publicP">&nbsp;&nbsp;&nbsp;1、请您仔细核对填写的项目信息胡椒粉和科技阿富汗喀个哈萨克就复活卡时间发货个哈时间复活卡时间发哈市发哈时间发货</p>
     </div>
+    <!-- 地址选择 -->
     <div class="">
       <van-popup
         v-model="placeChose"
@@ -62,15 +82,30 @@
       </van-popup>
     </div>
     <p class="order_btn">
-      <button type="button" name="button">发布</button>
+      <button type="button" name="button" @click="subDemand()">发布</button>
     </p>
-
+    <div class="">
+      <van-popup
+        v-model="typeChose"
+        position="bottom"
+        :style="{ height: '40%' }"
+      >
+      <van-picker
+        show-toolbar
+        title="标题"
+        :columns="typeList"
+        @cancel="cancelType"
+        @confirm="turnType"
+      />
+      </van-popup>
+    </div>
   </div>
 </template>
 
 <script>
 import PlaceData from '../../../static/data/place.json'
 import WorkHeader from '@/components/work_header'
+import {mapState} from 'vuex'
 export default {
   components:{WorkHeader},
   data(){
@@ -84,14 +119,32 @@ export default {
       minDate:new Date(),//最小选择日期
       choseTime:null,//选择日期
       dateText:null,//日期回显
-      isAgree:2,//是否同意协议
+      upMes:{
+        proName:null,//项目名称
+        demandType:null,//需求类型
+        demandDire:null,// 所有方向
+        cityText:null,//地址选择
+        address:null,//详细地址
+        damandCus:null,//联系人
+        demandMoblie:null,//联系方式
+        dateText:null,//开始时间
+        minMount:null,//最小金额
+        maxMount:null,//最大金额
+        isAgree:2,
+      },
+      typeList:['故障处理','安装调试','设备巡检','售前支持','信息化管理软件','咨询服务','视频监控','其他'],//需求类型列表
+      typeChose:false,//需求类型选择盒子
     }
+  },
+  computed:{
+    ...mapState(['token'])
   },
   created(){
     this.placeList=PlaceData.data;
   },
   methods:{
     choseCity(city){//选择城市
+      alert(1)
       if(this.cityList.indexOf(city.text)>-1){
         this.cityList.splice(this.cityList.indexOf(city.text),1)
       }else{
@@ -101,9 +154,9 @@ export default {
     turnCity(){//确认选择城市
       this.placeChose=false;
       if(this.cityList.length>0){
-        this.cityText=this.cityList.join(',');
+        this.upMes.cityText=this.cityList.join(',');
       }else{
-        this.cityText=null;
+        this.upMes.cityText=null;
       }
     },
     turnDate(beginTime){//选择开始日期
@@ -117,9 +170,71 @@ export default {
       if(day<10){
         day='0'+day
       }
-      this.dateText=year+'-'+mon+'-'+day;
+      this.upMes.dateText=year+'-'+mon+'-'+day;
       this.dateChose=false;
     },
+    nextStep(){//第二步发单信息
+      this.$router.push('/sendComTurnOrder')
+    },
+    turnType(value){//需求类型选择
+      this.upMes.demandType=value;
+      this.typeChose=false;
+    },
+    cancelType(){
+      this.typeChose=false;
+    },
+    subDemand(){//提交需求
+      let _vm=this;
+      if(_vm.upMes.proName==null||_vm.upMes.proName==''){
+        _vm.$toast('请输入项目名称')
+      }else if(_vm.upMes.demandType==null||_vm.upMes.demandType==''){
+        _vm.$toast('请输入需求类型')
+      }else if(_vm.upMes.demandDire==null||_vm.upMes.demandDire==''){
+        _vm.$toast('请输入所有方向')
+      }else if(_vm.upMes.cityText==null||_vm.upMes.cityText==''){
+        _vm.$toast('请选择服务地址')
+      }else if(_vm.upMes.address==null||_vm.upMes.address==''){
+        _vm.$toast('请输入详细地址')
+      }else if(_vm.upMes.demandCus==null||_vm.upMes.demandCus==''){
+        _vm.$toast('请输入联系人')
+      }else if(_vm.upMes.demandMoblie==null||_vm.upMes.demandMoblie==''){
+        _vm.$toast('请输入联系方式')
+      }else if(!(/^1[3456789]\d{9}$/.test(_vm.upMes.demandMoblie))){
+        _vm.$toast('请输入正确的手机号')
+      }else if(_vm.upMes.dateText==null||_vm.upMes.dateText==''){
+        _vm.$toast('请选择开始时间')
+      }else if(_vm.upMes.minMount==null||_vm.upMes.minMount==''){
+        _vm.$toast('请输入最小金额')
+      }else if(_vm.upMes.maxMount==null||_vm.upMes.maxMount==''){
+        _vm.$toast('请输入最大金额')
+      }else if(_vm.upMes.isAgree!=1){
+        _vm.$toast('请您勾选并知晓项目规则')
+      }else{
+        let formdata =new FormData();
+        formdata.append('projectName',_vm.upMes.proName)
+        formdata.append('type',_vm.upMes.demandType)
+        formdata.append('category',_vm.upMes.demandDire)
+        formdata.append('place',_vm.upMes.address)
+        formdata.append('address',_vm.upMes.cityText)
+        formdata.append('linkman',_vm.upMes.demandCus)
+        formdata.append('contact',_vm.upMes.demandMoblie)
+        formdata.append('startTime',_vm.upMes.dateText)
+        formdata.append('minBudget',_vm.upMes.minMount)
+        formdata.append('maxBudget',_vm.upMes.maxMount);
+        _vm.$axios.post(_vm.url+'/ict/demand/save',formdata,{headers:{
+          'Authorization':_vm.token
+        }}).then((res)=>{
+          if(res.data.code==0){
+            _vm.$toast('发布成功')
+            _vm.$router.go(-1)
+          }else{
+            _vm.$toast(res.data.msg)
+          }
+        }).catch((err)=>{
+          _vm.$toast('未知错误,请联系客服')
+        })
+      }
+    }
   }
 }
 </script>
@@ -157,6 +272,13 @@ export default {
           left:0;
           top:0;
         }
+        textarea{
+          width: 95%;
+          margin-top:1.5rem;
+          border-radius: 10px;
+          height: 10rem;
+          padding: .3rem;
+        }
       }
       li:last-child{
         input{
@@ -164,9 +286,6 @@ export default {
           text-align: center;
         }
       }
-    }
-    .publicP{
-      color:$tem-color;
     }
   }
   .place_title{
@@ -188,6 +307,10 @@ export default {
       padding-right: 1rem;
       color:$tem-color;
     }
+  }
+  .publicP{
+    color:$tem-color;
+    margin-top: 1rem;
   }
   .order_btn{
     width: 100%;

@@ -11,10 +11,11 @@
             class="pro_list"
           >
             <van-cell  v-for="(eng,indexEng) in engList" :key="indexEng" class="list_con">
-              <img :src="eng.pic" alt="">
+              <img src="../../../static/img/daxing.jpg" alt="">
               <span class="eng_name">{{eng.name}}</span>
-              <span class="eng_type">{{eng.text}}</span>
-              <span class="eng_con">{{eng.content}}</span>
+              <span class="eng_type">HCIE</span>
+              <span class="eng_con" v-if="eng.expert!=null">{{eng.expert.substring(0,12)}}...</span>
+              <span class="eng_con" v-else>-</span>
             </van-cell>
           </van-list>
         </van-pull-refresh>
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapMutations,mapState} from 'vuex'
 export default {
   data(){
     return{
@@ -39,15 +40,15 @@ export default {
           text:'HCIE',
           pic:'../../../static/img/daxing.jpg',
           content:'海绵海绵我是大星',
-        },
-        {
-          name:'海绵宝宝',
-          text:'HCIP',
-          pic:'../../../static/img/haimian.jpg',
-          content:'大星大星我是海绵',
         }
       ],
     }
+  },
+  computed:{
+    ...mapState(['token'])
+  },
+  created(){
+    this.getEngList()
   },
   methods:{
     ...mapMutations(['proMes_fn']),
@@ -70,6 +71,25 @@ export default {
       this.proMes_fn(this.proList[indexPro])
       this.$router.push({
         name:'ProDetials'
+      })
+    },
+    getEngList(){//获取工程师列表
+      let formdata=new FormData();
+      let _this=this;
+      _this.$axios.post(_this.url+'/ict/public/engineer/findListByCondition',formdata,{
+        headers:{
+          'Authorization':_this.token
+        }
+      }).then((res)=>{
+        console.log(res);
+        if(res.data.code==0){
+          _this.engList=res.data.data.content;
+        }else{
+          _this.$toast(res.data.msg)
+        }
+      }).catch((err)=>{
+        _this.$toast('未知错误,请联系客服')
+        console.log(err)
       })
     },
   }

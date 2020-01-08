@@ -36,7 +36,7 @@
             <input type="password" name="" value="" placeholder="请输入密码" v-model="userPass">
           </p>
           <p>
-            <input type="number" name="" value="" placeholder="请输入公司全称" v-model="companyName">
+            <input type="text" name="" value="" placeholder="请输入公司全称" v-model="companyName">
           </p>
           <p  style="display:flex;">
             <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcode">
@@ -81,7 +81,7 @@ export default {
     }
   },
   methods:{
-    ...mapMutations(['token_fn']),
+    ...mapMutations(['token_fn','userMes_fn']),
     sendCode(){//发送验证码
       if(this.userPhone==null||this.userPhone==''){
         this.$toast('请输入手机号')
@@ -148,8 +148,10 @@ export default {
         formdata.append('nickname',_this.companyName)
         formdata.append('type',type);
         _this.$axios.post(_this.url+'/ict/operator/register_customer',formdata).then((res)=>{
+          // console.log(res)
           if(res.data.code==0){
             _this.token_fn(res.data.data.token);
+            _this.userMes_fn(res.data.data)
             _this.$router.push('/');
             _this.$toast('登录成功')
           }else{
@@ -171,6 +173,7 @@ export default {
   padding-top: 1rem;
   p{
     width: 100%;
+    margin-top: .5rem;
     input{
       border-bottom:1px solid #ccc;
       width: 100%;
@@ -182,16 +185,18 @@ export default {
       width: 60%;
     }
     button{
-      width: 50%;
-      height: 3rem;
+      width: 55%;
+      height: 3.5rem;
       margin-top: .5rem;
       background: $btn-color;
       color:white;
       border-radius: 5px;
+      font-size: 1.4rem;
     }
   }
   .register_text{
     line-height: 5rem;
+    font-size: 1.5rem
     span{
       color:$tem-color;
       display: inline;

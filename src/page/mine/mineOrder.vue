@@ -15,16 +15,18 @@
               @load="onLoad"
               class="pro_list"
             >
-              <van-cell  v-for="(order,indexOr) in orderList" :key="indexOr" class="list_con">
-                <span class="order_name">{{order.name}}</span>
+              <van-cell  v-for="(order,indexOr) in orderList" :key="indexOr" class="list_con" @click="orderDetalis(indexOr)">
+                <span class="order_name">{{order.projectName}}</span><br>
                 <span class="order_remark">{{order.content}}</span><br>
                 <p>
-                  <span style="color:red;font-weight:bold;">￥{{order.count}}</span>
+                  <span style="color:red;font-weight:bold;">￥{{order.minBudget}}-{{order.maxBudget}}</span>
                   <span>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==0">待支付</van-button>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==1">匹配中</van-button>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==2">服务中</van-button>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==3" disabled >已完成</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==0">已申请</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==1">已审核</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==2">已委派</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==3">已开工</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==4">已完工</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==5">已付款</van-button>
                   </span>
                 </p>
               </van-cell>
@@ -37,6 +39,7 @@
 </template>
 
 <script>
+import {mapState,mapMutations} from 'vuex'
 import WorkHeader from '@/components/work_header'
 export default {
   components:{WorkHeader},
@@ -53,29 +56,18 @@ export default {
           content:'乌拉乌拉乌拉乌拉乌拉乌拉乌拉乌拉...',
           count:'10000-28888',
           state:2,
-        },
-        {
-          name:'北京瑞得音xxxx项目',
-          content:'乌拉乌拉乌拉乌拉乌拉乌拉乌拉乌拉...',
-          count:'10000-28888',
-          state:1,
-        },
-        {
-          name:'北京瑞得音xxxx项目',
-          content:'乌拉乌拉乌拉乌拉乌拉乌拉乌拉乌拉...',
-          count:'10000-28888',
-          state:3,
-        },
-        {
-          name:'北京瑞得音xxxx项目',
-          content:'乌拉乌拉乌拉乌拉乌拉乌拉乌拉乌拉...',
-          count:'10000-28888',
-          state:0,
-        },
+        }
       ],
     }
   },
+  computed:{
+      ...mapState(['token','userMes'])
+  },
+  mounted(){
+    this.getOrderList()
+  },
   methods:{
+    ...mapMutations(['proMes_fn']),
     onLoad() {   //下拉加载
       setTimeout(() => {
         this.loading = false;
@@ -91,6 +83,30 @@ export default {
          this.count++;
        }, 500);
     },
+    getOrderList(){//获取发单列表
+      let _this=this;
+      console.log(_this.userMes)
+      let formdata=new FormData();
+      formdata.append('customerId',_this.userMes.ictOperatorVO.ictCustomerVO.id);
+      _this.$axios.post(_this.url+'/ict/demand/findListByCondition',formdata,{headers:{
+        'Authorization':_this.token
+      }}).then((res)=>{
+        // console.log(res);
+        if(res.data.code==0){
+          _this.orderList=res.data.data.content;
+        }else{
+          _this.$toast(res.data.msg)
+        }
+      }).catch((err)=>{
+        // console.log(err);
+        _this.$toast('未知错误,请联系客服')
+      })
+    },
+    orderDetalis(index){//发单详情
+      console.log(this.orderList[index]);
+      this.proMes_fn(this.orderList[index]);
+      this.$router.push('/orderDetails')
+    },
   }
 }
 </script>
@@ -102,12 +118,34 @@ export default {
   .pro_list{
     padding-bottom: 10rem;
     .list_con{
-      .order_name{
-        font-size: 1.6rem;
+      width: 95%;
+      margin:0 auto;
+      margin-top:1rem;
+      height: 10rem;
+      box-shadow: 0px 0px 5px #ccc;
+      border-radius: 8px;
+      position: relative;
+      .pro_name{
+        font-weight: bold;
+        font-size: 1.5rem;
       }
-      .order_remark{
-        font-size: 1.3rem;
+      .pro_public{
         color:#666;
+        margin-top:1rem;
+      }
+      .pro_count{
+        color:$tem-color;
+        font-weight: bold;
+        position: absolute;
+        top:.2rem;
+        right:.5rem;
+      }
+      .pro_status{
+        margin-left: 2.5rem;
+        .public_tate{
+          margin-left: 1rem;
+          font-size: 1.3rem;
+        }
       }
     }
     p{

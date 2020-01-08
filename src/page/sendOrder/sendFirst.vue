@@ -13,8 +13,9 @@
           <input type="text" name="" value="" placeholder="请输入需求类型" v-model="upMes.demandType">
           <span @click="typeChose=true"></span>
         </li>
-        <li>所有方向:
-          <input type="text" name="" value="" placeholder="请输入所有方向" v-model="upMes.demandDire">
+        <li>
+          <!-- <input type="text" name="" value="" placeholder="请输入所有方向" v-model="upMes.demandDire"> -->
+          <textarea name="name" rows="8" cols="80" placeholder="请输入需求描述" v-model="upMes.demandDire"></textarea>
         </li>
         <li>服务地址:
           <input type="text" name="" value="" placeholder="请选择服务地址" v-model="upMes.cityText">
@@ -26,8 +27,8 @@
         <li>&nbsp;&nbsp;&nbsp;联系人:
           <input type="text" name="" value="" placeholder="请输入联系人" v-model="upMes.demandCus">
         </li>
-        <li>联系电话:
-          <input type="text" name="" value="" placeholder="请输入联系人电话" v-model="upMes.demandMoblie">
+        <li>现场联系人电话:
+          <input type="text" name="" value="" placeholder="请输入联系人电话" v-model="upMes.demandMoblie" style="width:20rem;">
         </li>
         <li>开始时间:
           <input type="text" name="" value="" placeholder="请选择开始时间" v-model="upMes.dateText">
@@ -271,6 +272,13 @@ export default {
           height:100%;
           left:0;
           top:0;
+        }
+        textarea{
+          width: 95%;
+          margin-top:1.5rem;
+          border-radius: 10px;
+          height: 10rem;
+          padding: .3rem;
         }
       }
       li:last-child{

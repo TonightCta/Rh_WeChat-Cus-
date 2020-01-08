@@ -8,12 +8,12 @@
           <img src="../../static/img/dont.jpg" alt="" @click="goLogin()"/>
         </p>
         <ul class="list_toute">
-          <li>昵称:  海绵宝宝</li>
+          <li>昵称:  {{nickName}}</li>
           <!-- <li>手机号:  18888888888</li> -->
           <li @click="goLogin()">个人信息>></li>
           <!-- <router-link to="/minePro" tag="li">我的接单>></router-link> -->
           <router-link to="/mineMessages" tag="li">我的消息>></router-link>
-          <li>退出登录>></li>
+          <li @click="outLogin()">退出登录>></li>
         </ul>
       </van-popup>
     </div>
@@ -21,23 +21,44 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState,mapMutations} from 'vuex'
 export default {
   data(){
     return{
-      show:false
+      show:false,
+      nickName:'未登录',//用户昵称
     }
   },
   computed:{
-    ...mapState(['token'])
+    ...mapState(['token','userMes'])
+  },
+  created(){
+    if(this.userMes.ictOperatorVO!=null){
+      this.nickName=this.userMes.ictOperatorVO.ictCustomerVO.name;
+    }
   },
   methods:{
+    ...mapMutations(['token_fn','userMes_fn']),
     goLogin(){//登录
       if(this.token!=null){
         this.$router.push('/mine')
       }else{
         this.$router.push('/login')
       }
+    },
+    outLogin(){//退出登录
+      this.userMes_fn(null);
+      this.token_fn(null);
+      this.$toast.loading({
+        message: '注销中...',
+        forbidClick: true,
+        loadingType: 'spinner'
+      });
+      setTimeout(()=>{
+        this.$toast('注销成功');
+        this.show=false;
+        this.nickName='未登录';
+      },2000)
     },
   }
 }

@@ -5,9 +5,9 @@
       <li @click="openLss()">我要发单</li>
       <router-link to="/mineOrder" tag="li">我的发单</router-link>
     </ul>
-    <div class="lssue_box" ref="lssue_box" v-if="isOpenLss" @click="closeLss()">
+    <div class="lssue_box" ref="lssue_box" v-show="isOpenLss" @click="closeLss()">
       <ul>
-        <li ref="mineLss">个人发布</li>
+        <li ref="mineLss" @click.stop="perSendOrder()">个人发布</li>
         <li ref="companyLss" @click.stop="sendOrder()">企业发布</li>
       </ul>
       <span>
@@ -26,7 +26,7 @@ export default {
     }
   },
   computed:{
-    ...mapState(['token'])
+    ...mapState(['token','userMes'])
   },
   methods:{
     openLss(){//发单窗口
@@ -37,7 +37,7 @@ export default {
         setTimeout(()=>{
           this.$refs.companyLss.style.bottom='11rem';
         },50)
-      })
+      },100)
     },
     closeLss(){//关闭发单窗口
       this.$refs.lssue_box.style.opacity='0'
@@ -49,14 +49,26 @@ export default {
         this.isOpenLss=false;
       },300)
     },
-    sendOrder(){
+    sendOrder(){//企业发单
       if(this.token== null){
         this.$toast('请先登录');
         this.$router.push('/login')
+      }else if(this.userMes.ictOperatorVO.identityType==1){
+        this.$toast('当前账号为个人账户,请到个人发布重试')
       }else{
         this.$router.push('/sendComOrder')
       }
-    }
+    },
+    perSendOrder(){//个人发单
+      if(this.token== null){
+        this.$toast('请先登录');
+        this.$router.push('/login')
+      }else if(this.userMes.ictOperatorVO.identityType==0){
+        this.$toast('当前账号为企业账户,请到个人发布重试')
+      }else{
+        this.$router.push('/sendComSecOrder')
+      }
+    },
   }
 }
 </script>
@@ -88,8 +100,8 @@ export default {
     height: 100%;
     top:0;
     bottom:0;
-    background: rgba(255,255,255,.7);
-    z-index: 9999;
+    background: rgba(255,255,255,.8);
+    z-index: 1000;
     opacity: 0;
     transition: .5s all;
     ul{
@@ -111,7 +123,7 @@ export default {
         bottom: -200%;
         position: absolute;
         transition: .5s all;
-        left: 3rem;
+        left: 5rem;
       }
       li:last-child{
         width: 12rem;
@@ -122,7 +134,7 @@ export default {
         line-height: 12rem;
         text-align: center;
         position: absolute;
-        right:3rem;
+        right:5rem;
         bottom: -200%;
         transition: .5s all;
       }

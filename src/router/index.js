@@ -58,6 +58,11 @@ const router=new Router({
       component:resolve=>require(['@/page/mine/mine'],resolve)
     },
     {
+      path:'/mineIndu',//所属行业
+      name:'MineIndu',
+      component:resolve=>require(['@/page/mine/mineIndu'],resolve)
+    },
+    {
       path:'/mineOrder',//我的发单
       name:'MineOrder',
       component:resolve=>require(['@/page/mine/mineOrder'],resolve)
@@ -77,11 +82,21 @@ const router=new Router({
       name:'SendComOrder',
       component:resolve=>require(['@/page/sendOrder/sendFirst'],resolve)
     },
+    // {
+    //   path:'/sendComTurnOrder',//发送需求
+    //   name:'SendComTurnOrder',
+    //   component:resolve=>require(['@/page/sendOrder/sendSecond'],resolve)
+    // },
     {
-      path:'/sendComTurnOrder',//发送需求
-      name:'SendComTurnOrder',
+      path:'/sendComSecOrder',//个人发单
+      name:'SendComSecOrder',
       component:resolve=>require(['@/page/sendOrder/sendSecond'],resolve)
     },
+    {
+      path:'/orderDetails',//发单详情
+      name:'OrderDetails',
+      component:resolve=>require(['@/page/mine/orderDetials'],resolve)
+    }
   ]
 });
 router.beforeEach((to,from,next)=>{
