@@ -54,7 +54,7 @@
           :items="placeList"
           :active-id.sync="cityList"
           :main-active-index.sync="activeIndex"
-          @click-item="choseCity"
+          :click-item="choseCity"
         />
       </van-popup>
     </div>
@@ -72,7 +72,7 @@ export default {
       userPhone:null,//用户手机
       placeList:[],//地点列表
       placeChose:false,//地区选择
-      cityList:null,//选择城市列表
+      cityList:[],//选择城市列表
       //placeChoose
       activeIndex:0,
       cityText:null,//所在城市
@@ -88,7 +88,7 @@ export default {
     ...mapState(['userMes','token'])
   },
   created(){
-    console.log(this.userMes)
+    // console.log(this.userMes)
     this.placeList=PlaceData.data;
     this.nickName=this.userMes.ictOperatorVO.ictCustomerVO.name;
     this.userPhone=this.userMes.ictOperatorVO.mobile;
@@ -114,8 +114,8 @@ export default {
     ...mapMutations(['userMes_fn']),
     turnCity(){//确认选中城市
       let _this=this;
-      if(_this.cityList!=null){
-        _this.cityText=_this.cityList;
+      if(_this.cityList.length>1){
+        _this.cityText=_this.cityList.join('/');
         let formdata=new FormData();
         formdata.append('livePlace',_this.cityText);
         _this.$axios.post(_this.url+'/ict/customer/savePersonalCenter',formdata,{
@@ -139,7 +139,11 @@ export default {
       }
     },
     choseCity(city){//选择城市
-      this.cityList=city.text;
+      if(this.cityList.indexOf(city.text)>-1){
+        this.cityList.splice(this.cityList.indexOf(city.text),1)
+      }else{
+        this.cityList.push(city.text)
+      };
     },
   }
 }

@@ -64,7 +64,7 @@
           :items="placeList"
           :active-id.sync="cityList"
           :main-active-index.sync="activeIndex"
-          @click-item="choseCity"
+          :click-item="choseCity"
         />
       </van-popup>
     </div>

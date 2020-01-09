@@ -63,7 +63,7 @@
           :items="placeList"
           :active-id.sync="cityList"
           :main-active-index.sync="activeIndex"
-          @click-item="choseCity"
+          :click-item="choseCity"
         />
       </van-popup>
     </div>
@@ -110,10 +110,11 @@ export default {
   components:{WorkHeader},
   data(){
     return{
+      activeIds:[],
       placeChose:false,
       cityList:[],//选择地区列表
       placeList:[],//地点数据
-      cityText:null,//回显地址
+      cityText:[],//回显地址
       activeIndex:0,//默认展开省市
       dateChose:false,//日期选择盒子
       minDate:new Date(),//最小选择日期
@@ -144,7 +145,7 @@ export default {
   },
   methods:{
     choseCity(city){//选择城市
-      alert(1)
+      // alert(1)
       if(this.cityList.indexOf(city.text)>-1){
         this.cityList.splice(this.cityList.indexOf(city.text),1)
       }else{

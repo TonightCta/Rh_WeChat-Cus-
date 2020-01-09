@@ -15,7 +15,7 @@
           <input type="number" name="" value="" placeholder="请输入公司开户行账号" v-model="bankNum">
         </p>
       </div>
-      <div class="company_mes">
+      <div class="company_mes" v-if="isHasAuth">
         <p style="fontSize:1.5rem;">上传营业执照</p>
         <p class="publicP">请确保证件完整,编号、印章、文字、照片均清楚可见</p>
         <p class="upPic">
@@ -25,13 +25,19 @@
             <van-icon name="clear" size="20" @click="delLicPic()"/>
           </span>
         </p>
-        <p class="publicP">
+        <p class="publicP" v-if="isHasAuth">
           <van-radio-group v-model="isAgree">
             <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目认证规则》</span></van-radio>
           </van-radio-group>
         </p>
         <p class="publicP">温馨提示:</p>
         <p class="publicP">&nbsp;&nbsp;&nbsp;1、请您仔细核对填写的项目信息胡椒粉和科技阿富汗喀个哈萨克就复活卡时间发货个哈时间复活卡时间发哈市发哈时间发货</p>
+      </div>
+      <div class="company_mes" v-else>
+        <p style="fontSize:1.5rem;">已上传营业执照</p>
+        <p class="upPic">
+          <img :src="url+'/'+userMes.ictOperatorVO.ictCustomerVO.businessLicense" alt="" @click="perHasUpPic()">
+        </p>
       </div>
     </div>
     <div class="">
@@ -41,7 +47,7 @@
       >
       </van-image-preview>
     </div>
-    <p class="sub_btn">
+    <p class="sub_btn" v-if="isHasAuth">
       <button type="button" name="button" @click="subAuth()">提交认证</button>
     </p>
   </div>
@@ -61,10 +67,21 @@ export default {
       upFile:null,//营业执照
       bankName:null,//开户行名称
       bankNum:null,//银行账号
+      isHasAuth:true,//是否已认证
     }
   },
   computed:{
-    ...mapState(['token'])
+    ...mapState(['token','userMes'])
+  },
+  created(){
+    console.log(this.userMes);
+    if(this.userMes.ictOperatorVO.ictCustomerVO.state==1||this.userMes.ictOperatorVO.ictCustomerVO.state==2){
+      this.isHasAuth=false;
+      this.bankName=this.userMes.ictOperatorVO.ictCustomerVO.accountName
+      this.bankNum=this.userMes.ictOperatorVO.ictCustomerVO.accountNumber
+    }else{
+      this.isHasAuth=true;
+    };
   },
   methods:{
     ...mapMutations(['userMes_fn']),
@@ -78,6 +95,10 @@ export default {
         _this.licPic.push(this.result);
         _this.isUpLic=false;
       };
+    },
+    perHasUpPic(){//预览已上传执照
+      this.licPic.push(this.url+'/'+this.userMes.ictOperatorVO.ictCustomerVO.businessLicense);
+      this.licPicBox=true;
     },
     delLicPic(){//删除已上传照片
       this.licPic=[];

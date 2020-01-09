@@ -53,7 +53,7 @@ export default {
       if(this.token== null){
         this.$toast('请先登录');
         this.$router.push('/login')
-      }else if(this.userMes.ictOperatorVO.identityType==1){
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==1){
         this.$toast('当前账号为个人账户,请到个人发布重试')
       }else{
         this.$router.push('/sendComOrder')
@@ -63,7 +63,7 @@ export default {
       if(this.token== null){
         this.$toast('请先登录');
         this.$router.push('/login')
-      }else if(this.userMes.ictOperatorVO.identityType==0){
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==0){
         this.$toast('当前账号为企业账户,请到个人发布重试')
       }else{
         this.$router.push('/sendComSecOrder')
