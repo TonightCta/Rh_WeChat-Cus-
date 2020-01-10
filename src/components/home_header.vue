@@ -47,7 +47,7 @@ export default {
       }
     },
     outLogin(){//退出登录
-      this.userMes_fn(null);
+      this.userMes_fn({});
       this.token_fn(null);
       this.$toast.loading({
         message: '注销中...',

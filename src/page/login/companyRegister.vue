@@ -6,24 +6,24 @@
       <van-tab title="个人注册">
         <div class="register_con">
           <p>
-            <input type="number" name="" value="" placeholder="请输入手机号" v-model="userPhone">
+            <input type="number" name="" value="" placeholder="请输入手机号" v-model="userPhonePeo">
           </p>
           <p>
-            <input type="password" name="" value="" placeholder="请输入密码" v-model="userPass">
+            <input type="password" name="" value="" placeholder="请输入密码" v-model="userPassPeo">
           </p>
           <p  style="display:flex;">
-            <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcode">
-            <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button>
+            <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcodePeo">
+            <!-- <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button> -->
+            <SIdentify :identifyCode="picCode" @click.native="refreshCode()"></SIdentify>
           </p>
-
           <p class="register_text">
             注册即同意
-            <span>
+            <span style="color:#C93625;">
               <<个人注册协议>>
             </span>
           </p>
-          <span>
-            <button type="button" name="button" @click="regisCom(1)">注册</button>
+          <span class="regisBtn">
+            <button type="button" name="button" @click="regisPeo(1)">注册</button>
           </span>
         </div>
       </van-tab>
@@ -40,16 +40,16 @@
           </p>
           <p  style="display:flex;">
             <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcode">
-            <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button>
+            <SIdentify :identifyCode="picCode" @click.native="refreshCode()"></SIdentify>
+            <!-- <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button> -->
           </p>
-
           <p class="register_text">
             注册即同意
-            <span>
+            <span style="color:#C93625;">
               <<企业注册协议>>
             </span>
           </p>
-          <span>
+          <span class="regisBtn">
             <button type="button" name="button" @click="regisCom(0)">注册</button>
           </span>
         </div>
@@ -61,9 +61,11 @@
 <script>
 import {mapMutations} from 'vuex'
 import LoginHeader from '@/components/login_header'
+import SIdentify from '@/components/picCode'
 export default {
   components:{
-    LoginHeader
+    LoginHeader,
+    SIdentify
   },
   data(){
     return{
@@ -78,6 +80,10 @@ export default {
       msgcode:null,//短信验证码
       phoneCode:null,//回执验证码
       active:1,
+      picCode:String(Math.round(9000*Math.random()+1000)),
+      msgcodePeo:null,//个人注册验证码
+      userPhonePeo:null,//个人注册手机号
+      userPassPeo:null,//个人注册密码
     }
   },
   methods:{
@@ -139,7 +145,7 @@ export default {
         _this.$toast('请输入公司名称')
       }else if(_this.msgcode==null||_this.msgcode==''){
         _this.$toast('请输入验证码')
-      }else if(_this.msgcode!=_this.phoneCode){
+      }else if(String(_this.msgcode)!==_this.picCode){
         _this.$toast('您输入的验证码有误')
       }else{
         let formdata=new FormData();
@@ -155,12 +161,54 @@ export default {
             _this.$router.push('/');
             _this.$toast('登录成功')
           }else{
+            _this.refreshCode()
             _this.$toast(res.data.msg)
           }
         }).catch((err)=>{
+          _this.refreshCode()
           _this.$toast('未知错误,请联系客服')
         })
       }
+    },
+    regisPeo(type){
+      let _this=this;
+      if(_this.userPhone==null||_this.userPhone==''){
+        _this.$toast('请输入您的手机号')
+      }else if(!(/^1[3456789]\d{9}$/.test(this.userPhone))){
+        _this.$toast('请输入正确的手机号码')
+      }else if(_this.userPass==null||_this.userPass==''){
+        _this.$toast('请输入密码')
+      }else if(_this.msgcodePeo==null||_this.msgcodePeo==''){
+        _this.$toast('请输入验证码')
+      }else if(String(_this.msgcodePeo)!==_this.picCode){
+        _this.$toast('您输入的验证码有误')
+      }else{
+        let formdata=new FormData();
+        formdata.append('mobile',_this.userPhone)
+        formdata.append('password',_this.userPass)
+        formdata.append('nickname',_this.companyName)
+        formdata.append('type',type);
+        _this.$axios.post(_this.url+'/ict/operator/register_customer',formdata).then((res)=>{
+          // console.log(res)
+          if(res.data.code==0){
+            _this.token_fn(res.data.data.token);
+            _this.userMes_fn(res.data.data)
+            _this.$router.push('/');
+            _this.$toast('登录成功')
+          }else{
+            _this.refreshCode()
+            _this.$toast(res.data.msg)
+          }
+        }).catch((err)=>{
+          _this.refreshCode()
+          _this.$toast('未知错误,请联系客服')
+        })
+      }
+    },
+    refreshCode(){//刷新验证码
+      let Num=null;
+      Num+=Math.round(9000*Math.random()+1000);
+      this.picCode=String(Num);
     },
   }
 }
@@ -198,11 +246,11 @@ export default {
     line-height: 5rem;
     font-size: 1.5rem
     span{
-      color:$tem-color;
+      color:$tem-color!important;
       display: inline;
     }
   }
-  span{
+  .regisBtn{
     width: 100%;
     margin-top: 2rem;
     button{

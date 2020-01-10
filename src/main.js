@@ -13,8 +13,9 @@ import Axios from 'axios'
 import 'nprogress/nprogress.css'
 Vue.prototype.$toast=Toast;
 Vue.prototype.$axios=Axios;
-Vue.prototype.url='http://10.0.0.28:4444';
+// Vue.prototype.url='http://10.0.0.28:4444';
 // Vue.prototype.url='http://hexsoft.top:8080';
+Vue.prototype.url='http://admin.ictwork.cn'
 NProgress.configure({
     easing: 'ease',  // 动画方式
     speed: 500,  // 递增进度条的速度

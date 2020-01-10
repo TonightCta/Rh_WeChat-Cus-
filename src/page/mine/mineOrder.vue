@@ -5,8 +5,8 @@
       <p>我的发单</p>
     </WorkHeader>
     <div class="order_con">
-      <van-tabs>
-        <van-tab v-for="index in tableList" :title="index" :key="index" title-active-color="red">
+      <van-tabs title-active-color="#C93625" color="#C93625" @click="searchOrder">
+        <van-tab v-for="index in tableList" :title="index" :key="index">
           <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
             <van-list
               v-model="loading"
@@ -25,8 +25,8 @@
                     <van-button type="info" round color="#404040" size="small" v-show="order.state==1">已审核</van-button>
                     <van-button type="info" round color="#404040" size="small" v-show="order.state==2">已委派</van-button>
                     <van-button type="info" round color="#404040" size="small" v-show="order.state==3">已开工</van-button>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==4">已完工</van-button>
-                    <van-button type="info" round color="#404040" size="small" v-show="order.state==5">已付款</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==4">待付款</van-button>
+                    <van-button type="info" round color="#404040" size="small" v-show="order.state==5">已完成</van-button>
                   </span>
                 </p>
               </van-cell>
@@ -45,7 +45,7 @@ export default {
   components:{WorkHeader},
   data(){
     return{
-      tableList:['全部','匹配中','服务中','待支付','已完成'],
+      tableList:['全部','已申请','匹配中','服务中','待支付','已完成'],
       count: 0,
       isLoading: false,
       loading: false,
@@ -83,15 +83,19 @@ export default {
          this.count++;
        }, 500);
     },
-    getOrderList(){//获取发单列表
+    getOrderList(type){//获取发单列表
       let _this=this;
       console.log(_this.userMes)
       let formdata=new FormData();
       formdata.append('customerId',_this.userMes.ictOperatorVO.ictCustomerVO.id);
+      console.log(type)
+      if(type!=undefined){
+        formdata.append('state',type);
+      }
       _this.$axios.post(_this.url+'/ict/demand/findListByCondition',formdata,{headers:{
         'Authorization':_this.token
       }}).then((res)=>{
-        // console.log(res);
+        console.log(res);
         if(res.data.code==0){
           _this.orderList=res.data.data.content;
         }else{
@@ -103,9 +107,24 @@ export default {
       })
     },
     orderDetalis(index){//发单详情
-      console.log(this.orderList[index]);
       this.proMes_fn(this.orderList[index]);
       this.$router.push('/orderDetails')
+    },
+    searchOrder(name,title){//切换列表
+      this.onLoad()
+      if(title==='全部'){
+        this.getOrderList()
+      }else if(title==='已申请'){
+        this.getOrderList(0)
+      }else if(title==='匹配中'){
+        this.getOrderList(1)
+      }else if(title==='服务中'){
+        this.getOrderList(3)
+      }else if(title=='待支付'){
+        this.getOrderList(4)
+      }else if(title==='已完成'){
+        this.getOrderList(5)
+      }
     },
   }
 }
