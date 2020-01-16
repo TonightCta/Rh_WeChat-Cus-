@@ -3,7 +3,7 @@
   <div class="home_table">
     <ul class="table_con">
       <li @click="openLss()">我要发单</li>
-      <router-link to="/mineOrder" tag="li">我的发单</router-link>
+      <li @click="myOrder()">我的发单</li>
     </ul>
     <div class="lssue_box" ref="lssue_box" v-show="isOpenLss" @click="closeLss()">
       <ul>
@@ -28,16 +28,44 @@ export default {
   computed:{
     ...mapState(['token','userMes'])
   },
+  created(){
+    // console.log(this.userMes)
+  },
   methods:{
     openLss(){//发单窗口
-      this.isOpenLss=true;
-      setTimeout(()=>{
-        this.$refs.lssue_box.style.opacity='1'
-        this.$refs.mineLss.style.bottom='11rem';
+      console.log(this.userMes)
+      if(this.userMes.ictOperatorVO.mobile==null){
+        this.$toast('您的信息尚未补全')
         setTimeout(()=>{
-          this.$refs.companyLss.style.bottom='11rem';
-        },50)
-      },100)
+          this.$router.push('/identifyChoose')
+        },500)
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==1){
+        this.$router.push('/sendComSecOrder')
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==0){
+        if(this.userMes.ictOperatorVO.ictCustomerVO.state==0){
+          // alert('您还未进行企业认证,请您完成认证后再试')
+          this.$toast('您还未进行企业认证,请您完成认证后再试');
+          setTimeout(()=>{
+            this.$router.push('/companyAuth')
+          },1000)
+        }else if(this.userMes.ictOperatorVO.ictCustomerVO.state==1){
+          // alert('您的认证信息审核中,请您完成认证后再试')
+          this.$toast('您的认证信息审核中,请您完成认证后再试');
+        }else if(this.userMes.ictOperatorVO.ictCustomerVO.state==-1){
+          // alert('您的认证被驳回,请更新认证后再试！')
+          this.$toast('您的认证被驳回,请更新认证后再试！');
+        }else{
+          this.$router.push('/sendComOrder')
+        }
+      }
+      // this.isOpenLss=true;
+      // setTimeout(()=>{
+      //   this.$refs.lssue_box.style.opacity='1'
+      //   this.$refs.mineLss.style.bottom='11rem';
+      //   setTimeout(()=>{
+      //     this.$refs.companyLss.style.bottom='11rem';
+      //   },50)
+      // },100)
     },
     closeLss(){//关闭发单窗口
       this.$refs.lssue_box.style.opacity='0'
@@ -50,24 +78,54 @@ export default {
       },300)
     },
     sendOrder(){//企业发单
-      if(this.token== null){
-        this.$toast('请先登录');
-        this.$router.push('/login')
-      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==1){
+      // if(this.token== null){
+      //   this.$toast('请先登录');
+      //   setTimeout(()=>{
+      //     this.$router.push('/login');
+      //   },1500)
+      // }else
+      if(this.userMes.ictOperatorVO.ictCustomerVO.type==1){
+        // alert('当前账号为个人账户,请到个人发布重试')
         this.$toast('当前账号为个人账户,请到个人发布重试')
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.state==0){
+        // alert('您还未进行企业认证,请您完成认证后再试')
+        this.$toast('您还未进行企业认证,请您完成认证后再试');
+        setTimeout(()=>{
+          this.$router.push('/companyAuth')
+        },1000)
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.state==1){
+        // alert('您的认证信息审核中,请您完成认证后再试')
+        this.$toast('您的认证信息审核中,请您完成认证后再试');
+      }else if(this.userMes.ictOperatorVO.ictCustomerVO.state==-1){
+        // alert('您的认证被驳回,请更新认证后再试！')
+        this.$toast('您的认证被驳回,请更新认证后再试！');
       }else{
         this.$router.push('/sendComOrder')
       }
     },
     perSendOrder(){//个人发单
-      if(this.token== null){
-        this.$toast('请先登录');
-        this.$router.push('/login')
-      }else if(this.userMes.ictOperatorVO.ictCustomerVO.type==0){
+      // if(this.token==null){
+      //   this.$toast('请先登录');
+      //   setTimeout(()=>{
+      //     this.$router.push('/login')
+      //   },1500)
+      // }else
+     if(this.userMes.ictOperatorVO.ictCustomerVO.type==0){
+        // alert('当前账号为企业账户,请到个人发布重试')
         this.$toast('当前账号为企业账户,请到个人发布重试')
       }else{
         this.$router.push('/sendComSecOrder')
       }
+    },
+    myOrder(){//我的发单
+      // if(this.token==null){
+      //   this.$toast('请先登录');
+      //   setTimeout(()=>{
+      //     this.$router.push('/login')
+      //   },1000)
+      // }else{
+        this.$router.push('/mineOrder')
+      // }
     },
   }
 }
@@ -101,7 +159,7 @@ export default {
     top:0;
     bottom:0;
     background: rgba(255,255,255,.8);
-    z-index: 1000;
+    z-index:1000;
     opacity: 0;
     transition: .5s all;
     ul{

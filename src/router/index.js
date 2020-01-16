@@ -96,6 +96,19 @@ const router=new Router({
       path:'/orderDetails',//发单详情
       name:'OrderDetails',
       component:resolve=>require(['@/page/mine/orderDetials'],resolve)
+    },
+    {
+      path:'/agreement',//用户注册协议
+      name:'Agreement',
+      component:resolve=>require(['@/page/Agreement'],resolve)
+    },
+    {
+      path:'/identifyChoose',//身份选择
+      name:'IdentifyChoose',
+      component:resolve=>require(['@/page/mine/identityChoose'],resolve),
+      meta:{
+        title:'身份选择'
+      }
     }
   ]
 });
@@ -107,5 +120,13 @@ router.afterEach(() => {
   setTimeout(()=>{
     NProgress.done()
   },500)
-})
+});
+router.onError((error) => {
+  const pattern = /Loading chunk (\d)+ failed/g;
+  const isChunkLoadFailed = error.message.match(pattern);
+  const targetPath = router.history.pending.fullPath;
+  if (isChunkLoadFailed) {
+    router.replace(targetPath);
+  }
+});
 export default router;

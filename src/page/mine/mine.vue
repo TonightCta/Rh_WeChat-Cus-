@@ -8,10 +8,10 @@
       <div class="con_card">
         <p class="user_pic">
           头像
-          <img src="../../../static/img/dont.jpg" alt="">
+          <img :src="userMes.ictOperatorVO.headImgUrl" alt="">
         </p>
         <p class="user_nickname">
-          昵称:&nbsp;{{nickName}}
+          昵称:&nbsp;{{userMes.ictOperatorVO.nickname}}
         </p>
       </div>
       <div class="con_mes">
@@ -114,7 +114,8 @@ export default {
     ...mapMutations(['userMes_fn']),
     turnCity(){//确认选中城市
       let _this=this;
-      if(_this.cityList.length>1){
+      // console.log(_this.cityList)
+      if(_this.cityList.length>0){
         _this.cityText=_this.cityList.join('/');
         let formdata=new FormData();
         formdata.append('livePlace',_this.cityText);
@@ -123,6 +124,7 @@ export default {
             'Authorization':_this.token
           }
         }).then((res)=>{
+          console.log(res)
           if(res.data.code==0){
             _this.$toast('设置地区成功');
             _this.userMes_fn(res.data.data)

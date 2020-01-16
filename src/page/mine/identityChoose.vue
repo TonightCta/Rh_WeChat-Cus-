@@ -1,52 +1,52 @@
-<!-- 企业注册 -->
+<!-- 身份选择 -->
 <template lang="html">
   <div class="company_register">
     <LoginHeader/>
     <van-tabs v-model="active">
-      <van-tab title="个人注册">
+      <van-tab title="个人">
         <div class="register_con">
           <p>
             <input type="number" name="" value="" placeholder="请输入手机号" v-model="userPhonePeo">
           </p>
           <p>
-            <input type="password" name="" value="" placeholder="请输入密码" v-model="userPassPeo">
+            <input type="text" name="" value="" placeholder="请输入邮箱" v-model="userEmailPeo">
           </p>
-          <p  style="display:flex;">
+          <!-- <p  style="display:flex;">
             <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcodePeo">
-            <!-- <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button> -->
+            <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button>
             <SIdentify :identifyCode="picCode" @click.native="refreshCode()"></SIdentify>
-          </p>
-          <p class="register_text">
+          </p> -->
+          <!-- <p class="register_text">
             注册即同意
             <router-link to="/agreement" tag="span"><<个人注册协议>></router-link>
-          </p>
+          </p> -->
           <span class="regisBtn">
-            <button type="button" name="button" @click="regisPeo(1)">注册</button>
+            <button type="button" name="button" @click="regisPeo(1)">保存</button>
           </span>
         </div>
       </van-tab>
-      <van-tab title="企业注册">
+      <van-tab title="企业">
         <div class="register_con">
           <p>
             <input type="number" name="" value="" placeholder="请输入手机号" v-model="userPhone">
           </p>
           <p>
-            <input type="password" name="" value="" placeholder="请输入密码" v-model="userPass">
+            <input type="text" name="" value="" placeholder="请输入企业邮箱" v-model="userEmail">
           </p>
           <p>
             <input type="text" name="" value="" placeholder="请输入公司全称" v-model="companyName">
           </p>
-          <p  style="display:flex;">
+          <!-- <p  style="display:flex;">
             <input type="number" name="" value="" placeholder="请输入验证码" v-model="msgcode">
             <SIdentify :identifyCode="picCode" @click.native="refreshCode()"></SIdentify>
-            <!-- <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button> -->
-          </p>
-          <p class="register_text">
+            <button type="button" name="button" @click="sendCode()" :disabled="senCodeBtn" ref="codeBtn">{{codeText}}</button>
+          </p> -->
+          <!-- <p class="register_text">
             注册即同意
             <router-link to="/agreement" tag="span"><<企业注册协议>></router-link>
-          </p>
+          </p> -->
           <span class="regisBtn">
-            <button type="button" name="button" @click="regisCom(0)">注册</button>
+            <button type="button" name="button" @click="regisCom(0)">保存</button>
           </span>
         </div>
       </van-tab>
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapMutations,mapState} from 'vuex'
 import LoginHeader from '@/components/login_header'
 import SIdentify from '@/components/picCode'
 export default {
@@ -71,16 +71,19 @@ export default {
       timer:null,
       radio:1,
       userPhone:null,//用户手机号
-      userPass:null,//用户密码
+      userEmail:null,//用户邮箱
       companyName:null,//公司名称
       msgcode:null,//短信验证码
       phoneCode:null,//回执验证码
       active:1,
       picCode:String(Math.round(9000*Math.random()+1000)),
       msgcodePeo:null,//个人注册验证码
-      userPhonePeo:null,//个人注册手机号
-      userPassPeo:null,//个人注册密码
+      userPhonePeo:null,//个人认证手机号
+      userEmailPeo:null,//个人认证邮箱
     }
+  },
+  computed:{
+    ...mapState(['token'])
   },
   methods:{
     ...mapMutations(['token_fn','userMes_fn']),
@@ -129,74 +132,73 @@ export default {
         })
       }
     },
-    regisCom(type){//企业账户注册
+    regisCom(type){//企业账户保存
       let _this=this;
+      let reg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$");
       if(_this.userPhone==null||_this.userPhone==''){
         _this.$toast('请输入您的手机号')
-      }else if(!(/^1[3456789]\d{9}$/.test(this.userPhone))){
+      }else if(!(/^1[3456789]\d{9}$/.test(_this.userPhone))){
         _this.$toast('请输入正确的手机号码')
-      }else if(_this.userPass==null||_this.userPass==''){
-        _this.$toast('请输入密码')
+      }else if(_this.userEmail==null||_this.userEmail==''){
+        _this.$toast('请输入企业邮箱')
+      }else if(!reg.test(_this.userEmail)){
+        _this.$toast('请输入正确的邮箱')
       }else if(_this.companyName==null||_this.companyName==''){
         _this.$toast('请输入公司名称')
-      }else if(_this.msgcode==null||_this.msgcode==''){
-        _this.$toast('请输入验证码')
-      }else if(String(_this.msgcode)!==_this.picCode){
-        _this.$toast('您输入的验证码有误')
       }else{
         let formdata=new FormData();
-        formdata.append('mobile',_this.userPhone)
-        formdata.append('password',_this.userPass)
-        formdata.append('nickname',_this.companyName)
-        formdata.append('type',type);
-        _this.$axios.post(_this.url+'/ict/operator/register_customer',formdata).then((res)=>{
-          // console.log(res)
+        formdata.append('phone',_this.userPhone)
+        formdata.append('email',_this.userEmail)
+        formdata.append('name',_this.companyName)
+        formdata.append('type',type)
+        _this.$axios.post(_this.url+'/ict/customer/save',formdata,{
+          headers:{
+            'Authorization':_this.token
+          }
+        }).then((res)=>{
           if(res.data.code==0){
-            _this.token_fn(res.data.data.token);
+            _this.$router.push('/home');
+            _this.$toast('保存成功')
             _this.userMes_fn(res.data.data)
-            _this.$router.push('/');
-            _this.$toast('注册成功')
           }else{
-            _this.refreshCode()
             _this.$toast(res.data.msg)
           }
         }).catch((err)=>{
-          _this.refreshCode()
-          _this.$toast('未知错误,请联系客服')
+
         })
+        //''
       }
     },
-    regisPeo(type){
+    regisPeo(type){//个人账户保存
       let _this=this;
+      let reg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$");
       if(_this.userPhonePeo==null||_this.userPhonePeo==''){
         _this.$toast('请输入您的手机号')
       }else if(!(/^1[3456789]\d{9}$/.test(this.userPhonePeo))){
         _this.$toast('请输入正确的手机号码')
-      }else if(_this.userPass==null||_this.userPassPeo==''){
-        _this.$toast('请输入密码')
-      }else if(_this.msgcodePeo==null||_this.msgcodePeo==''){
-        _this.$toast('请输入验证码')
-      }else if(String(_this.msgcodePeo)!==_this.picCode){
-        _this.$toast('您输入的验证码有误')
+      }else if(_this.userEmailPeo==null||_this.userEmailPeo==''){
+        _this.$toast('请输入你的邮箱')
+      } else if(!reg.test(_this.userEmailPeo)){
+        _this.$toast('您输入的邮箱格式有误')
       }else{
         let formdata=new FormData();
-        formdata.append('mobile',_this.userPhonePeo)
-        formdata.append('password',_this.userPass)
-        formdata.append('nickname',_this.companyName)
-        formdata.append('type',type);
-        _this.$axios.post(_this.url+'/ict/operator/register_customer',formdata).then((res)=>{
+        formdata.append('phone',_this.userPhonePeo)
+        formdata.append('email',_this.userEmailPeo)
+        formdata.append('type',type)
+        _this.$axios.post(_this.url+'/ict/customer/save',formdata,{
+          headers:{
+            'Authorization':_this.token
+          }
+        }).then((res)=>{
           // console.log(res)
           if(res.data.code==0){
-            _this.token_fn(res.data.data.token);
             _this.userMes_fn(res.data.data)
-            _this.$router.push('/');
-            _this.$toast('登录成功')
+            _this.$router.push('/sendComSecOrder');
+            _this.$toast('保存成功')
           }else{
-            _this.refreshCode()
             _this.$toast(res.data.msg)
           }
         }).catch((err)=>{
-          _this.refreshCode()
           _this.$toast('未知错误,请联系客服')
         })
       }

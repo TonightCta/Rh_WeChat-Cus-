@@ -38,11 +38,14 @@ export default {
     ...mapState(['userMes','token'])
   },
   mounted(){
-    this.InduList=this.userMes.ictOperatorVO.ictCustomerVO.industry.split('/');
-    for(let i in this.InduList){
-      this.$refs.feildDom[this.felidList.indexOf(this.InduList[i])].style.background="#C93625";
-      this.$refs.feildDom[this.felidList.indexOf(this.InduList[i])].style.color="white";
-      this.$refs.feildBack[this.felidList.indexOf(this.InduList[i])].style.display="block";
+    console.log(this.userMes);
+    if(this.userMes.ictOperatorVO.ictCustomerVO.industry!=null){
+      this.InduList=this.userMes.ictOperatorVO.ictCustomerVO.industry.split('/');
+      for(let i in this.InduList){
+        this.$refs.feildDom[this.felidList.indexOf(this.InduList[i])].style.background="#C93625";
+        this.$refs.feildDom[this.felidList.indexOf(this.InduList[i])].style.color="white";
+        this.$refs.feildBack[this.felidList.indexOf(this.InduList[i])].style.display="block";
+      }
     }
   },
   methods:{

@@ -13,7 +13,8 @@
             <van-cell  v-for="(eng,indexEng) in engList" :key="indexEng" class="list_con">
               <img src="../../../static/img/daxing.jpg" alt="">
               <span class="eng_name">{{eng.name}}</span>
-              <span class="eng_type">HCIE</span>
+              <span class="eng_type" v-if="eng.certificateVOList!=null">{{eng.certificateVOList[0].name}}</span>
+              <span class="eng_type" v-else>-</span>
               <span class="eng_con" v-if="eng.expert!=null">{{eng.expert.substring(0,12)}}...</span>
               <span class="eng_con" v-else>-</span>
             </van-cell>
@@ -81,7 +82,7 @@ export default {
           'Authorization':_this.token
         }
       }).then((res)=>{
-        console.log(res);
+        console.log(res,1);
         if(res.data.code==0){
           _this.engList=res.data.data.content;
         }else{

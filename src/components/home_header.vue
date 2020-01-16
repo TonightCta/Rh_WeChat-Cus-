@@ -1,19 +1,22 @@
 <!-- 首页头部 -->
 <template lang="html">
   <div class="home_header">
-    <van-icon name="wap-nav" color="white" size="3rem"  @click="show=true"/>
+    <p class="iconBox">
+      <span><van-icon name="wap-nav" color="white" size="3rem"  @click="show=true"/></span>
+      <router-link to="/mineMessages" tag="span"><van-icon name="bell" color="white" size="3rem"/></router-link>
+    </p>
     <div class="user_list">
       <van-popup v-model="show"  position="left" :style="{width:'50%',height:'100%'}">
         <p class="user_icon">
-          <img src="../../static/img/dont.jpg" alt="" @click="goLogin()"/>
+          <img :src="userMes.ictOperatorVO.headImgUrl" alt="" @click="goLogin()"/>
         </p>
         <ul class="list_toute">
           <li>昵称:  {{nickName}}</li>
           <!-- <li>手机号:  18888888888</li> -->
           <li @click="goLogin()">个人信息>></li>
           <!-- <router-link to="/minePro" tag="li">我的接单>></router-link> -->
-          <router-link to="/mineMessages" tag="li">我的消息>></router-link>
-          <li @click="outLogin()">退出登录>></li>
+          <!-- <router-link to="/mineMessages" tag="li">我的消息>></router-link> -->
+          <!-- <li @click="outLogin()">退出登录>></li> -->
         </ul>
       </van-popup>
     </div>
@@ -22,29 +25,40 @@
 
 <script>
 import {mapState,mapMutations} from 'vuex'
+import {getUrlParams} from '@/assets/getAuth'
 export default {
   data(){
     return{
       show:false,
-      nickName:'未登录',//用户昵称
+      nickName:null,//用户昵称
+      openID:getUrlParams('openid').split('#'),
     }
   },
   computed:{
-    ...mapState(['token','userMes'])
+    ...mapState(['token','userMes','isLogin'])
   },
   created(){
-    if(this.userMes.ictOperatorVO!=null){
-      this.nickName=this.userMes.ictOperatorVO.ictCustomerVO.name;
+    if(!this.isLogin){
+      this.getLogin()
     }
   },
+  mounted(){
+    setTimeout(()=>{
+      console.log(this.userMes)
+      this.nickName=this.userMes.ictOperatorVO.nickname;
+    },200)
+  },
   methods:{
-    ...mapMutations(['token_fn','userMes_fn']),
+    ...mapMutations(['token_fn','userMes_fn','isLogin_fn']),
     goLogin(){//登录
-      if(this.token!=null){
+      // if(this.token!=null){
         this.$router.push('/mine')
-      }else{
-        this.$router.push('/login')
-      }
+      // }else{
+        // this.$toast('请先登录');
+        // setTimeout(()=>{
+          // this.$router.push('/login')
+        // },1000)
+      // }
     },
     outLogin(){//退出登录
       this.userMes_fn({});
@@ -56,9 +70,34 @@ export default {
       });
       setTimeout(()=>{
         this.$toast('注销成功');
-        this.show=false;
-        this.nickName='未登录';
-      },2000)
+        this.nickName='未登录'
+        setTimeout(()=>{
+          window.open('http://www.ictwork.cn/mobile/')
+        },500)
+      },1000)
+    },
+    getLogin(){
+      // alert(this.openID[0])
+      let _this=this;
+      // if(_this.token==null){
+        let formdata=new FormData();
+        formdata.append('openId',this.openID[0]);
+        _this.$axios.post(_this.url+'/ict/operator/login_openId',formdata).then((res)=>{
+          console.log(res)
+          if(res.data.code==0){
+            // alert(1)
+            _this.token_fn(res.data.data.token)
+            _this.userMes_fn(res.data.data)
+            _this.isLogin_fn(true)
+          }else{
+            _this.$toast(res.data.msg)
+          }
+        }).catch((err)=>{
+          console.log(err)
+          _this.$toast('授权登录失败,请返回后再试')
+        })
+      // }
+
     },
   }
 }
@@ -76,6 +115,17 @@ export default {
   top:0;
   left:0;
   z-index: 999;
+  .iconBox{
+    width: 100%;
+    display: flex;
+    span{
+      width: 50%;
+    }
+    span:last-child{
+      text-align: right;
+      padding-right: 1rem;
+    }
+  }
   .user_list{
     width: 50%;
     height: 100%;

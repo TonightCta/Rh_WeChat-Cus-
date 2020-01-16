@@ -25,10 +25,10 @@
           <input type="text" name="" value="" placeholder="请输入详细地址" v-model="upMes.address">
         </li>
         <li>&nbsp;&nbsp;&nbsp;联系人:
-          <input type="text" name="" value="" placeholder="请输入联系人" v-model="upMes.demandCus">
+          <input  onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))" name="" value="" placeholder="请输入联系人" v-model="upMes.demandCus">
         </li>
         <li>现场联系人电话:
-          <input type="text" name="" value="" placeholder="请输入联系人电话" v-model="upMes.demandMoblie" style="width:20rem;">
+          <input type="number" name="" value="" placeholder="请输入联系人电话" v-model="upMes.demandMoblie" style="width:20rem;">
         </li>
         <li>开始时间:
           <input type="text" name="" value="" placeholder="请选择开始时间" v-model="upMes.dateText">
