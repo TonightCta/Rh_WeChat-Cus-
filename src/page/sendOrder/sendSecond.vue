@@ -40,7 +40,7 @@
           <input type="number" name="" value="" placeholder="￥" v-model="upMes.maxMount">
         </li>
       </ul>
-      <p style="marginTop:1rem;">
+      <p style="marginTop:1rem;" class="publicP">
         <van-radio-group v-model="upMes.isAgree">
           <van-radio name="1" checked-color="#C93625" icon-size="16">同意<span style="color:#C93625;">《犀牛小哥项目发布规则》</span></van-radio>
         </van-radio-group>
@@ -312,6 +312,7 @@ export default {
   .publicP{
     color:$tem-color;
     margin-top: 1rem;
+    font-size: 1.4rem;
   }
   .order_btn{
     width: 100%;

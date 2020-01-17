@@ -8,7 +8,7 @@
     <div class="user_list">
       <van-popup v-model="show"  position="left" :style="{width:'50%',height:'100%'}">
         <p class="user_icon">
-          <img :src="userMes.ictOperatorVO.headImgUrl" alt="" @click="goLogin()"/>
+          <img :src="headImgUrl" alt="" @click="goLogin()"/>
         </p>
         <ul class="list_toute">
           <li>昵称:  {{nickName}}</li>
@@ -31,6 +31,7 @@ export default {
     return{
       show:false,
       nickName:null,//用户昵称
+      headImgUrl:null,//用户头像
       openID:getUrlParams('openid').split('#'),
     }
   },
@@ -45,8 +46,9 @@ export default {
   mounted(){
     setTimeout(()=>{
       console.log(this.userMes)
+      this.headImgUrl=this.userMes.ictOperatorVO.headImgUrl;
       this.nickName=this.userMes.ictOperatorVO.nickname;
-    },200)
+    },300)
   },
   methods:{
     ...mapMutations(['token_fn','userMes_fn','isLogin_fn']),

@@ -73,6 +73,11 @@ const router=new Router({
       component:resolve=>require(['@/page/mine/mineMessages'],resolve)
     },
     {
+      path:'/msgDetails',//消息详情
+      name:'MsgDetails',
+      component:resolve=>require(['@/page/mine/msgDetials'],resolve)
+    },
+    {
       path:'/companyAuth',//企业认证
       name:'ComPanyAuth',
       component:resolve=>require(['@/page/mine/companyAuth'],resolve)

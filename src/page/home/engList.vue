@@ -11,7 +11,7 @@
             class="pro_list"
           >
             <van-cell  v-for="(eng,indexEng) in engList" :key="indexEng" class="list_con">
-              <img src="../../../static/img/daxing.jpg" alt="">
+              <img :src="eng.ictOperatorVO.headImgUrl" alt="">
               <span class="eng_name">{{eng.name}}</span>
               <span class="eng_type" v-if="eng.certificateVOList!=null">{{eng.certificateVOList[0].name}}</span>
               <span class="eng_type" v-else>-</span>
@@ -37,11 +37,10 @@ export default {
       finished: false,
       engList:[
         {
-          name:'派大星',
-          text:'HCIE',
-          pic:'../../../static/img/daxing.jpg',
-          content:'海绵海绵我是大星',
-        }
+          ictOperatorVO:{
+            headImgUrl:null,
+          }
+        },
       ],
     }
   },
@@ -62,6 +61,7 @@ export default {
       }, 500);
     },
     onRefresh() {   //下拉刷新
+      this.getEngList()
      setTimeout(() => {
          this.$toast('刷新成功');
          this.isLoading = false;
