@@ -19,19 +19,19 @@
         <van-steps direction="vertical" :active="proMes.state-1" active-color="#C93625">
           <van-step>
             <p>提交申请,等待审核</p>
-            <p>{{proMes.ictDemandVO.startTime}}</p>
+            <p>{{proMes.createTime}}</p>
           </van-step>
           <van-step>
             <p>接单成功</p>
-            <p v-if="proMes.ictDemandVO.approveTime!=null">{{proMes.ictDemandVO.approveTime}}</p>
+            <p v-if="proMes.approveTime!=null">{{proMes.approveTime}}</p>
           </van-step>
           <van-step>
             <p>等待交付</p>
-            <p v-if="proMes.ictDemandVO.workTime!=null">{{proMes.ictDemandVO.workTime}}</p>
+            <p v-if="proMes.workTime!=null">{{proMes.workTime}}</p>
           </van-step>
           <van-step>
             <p>等待付款</p>
-            <p v-if="proMes.ictDemandVO.payTime!=null"> {{proMes.ictDemandVO.payTime}}</p>
+            <p v-if="proMes.payTime!=null"> {{proMes.payTime}}</p>
           </van-step>
         </van-steps>
       </div>

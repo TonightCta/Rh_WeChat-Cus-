@@ -74,7 +74,7 @@ export default {
         this.$toast('注销成功');
         this.nickName='未登录'
         setTimeout(()=>{
-          window.open('http://www.ictwork.cn/mobile/')
+          window.location.href='http://www.ictwork.cn/mobile/'
         },500)
       },1000)
     },
@@ -88,9 +88,16 @@ export default {
           console.log(res)
           if(res.data.code==0){
             // alert(1)
-            _this.token_fn(res.data.data.token)
-            _this.userMes_fn(res.data.data)
-            _this.isLogin_fn(true)
+            if(res.data.data.ictOperatorVO.identityType==1){
+              _this.token_fn(res.data.data.token)
+              _this.userMes_fn(res.data.data)
+              _this.isLogin_fn(true)
+            }else{
+              _this.$toast('该账号已在工程师端注册，请返回工程师端重试');
+              setTimeout(()=>{
+                window.location.href='http://www.ictwork.cn/mobile/'
+              },500)
+            }
           }else{
             _this.$toast(res.data.msg)
           }
